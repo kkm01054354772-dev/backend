@@ -1,0 +1,65 @@
+backend
+    - java , C#, python 
+    - DB 서버와 연동
+    - front 상호작용
+    - JSP / Servlet (웹에서 동작하는 자바) => 스프링 프레임워크
+
+스프링 프레임워크 : 기본 
+스프링 부트 : 스프링 프레임워크를 사용하기 편하게 변경 (간략화)
+
+프로젝트 관리 도구
+    - 라이브러리 관리, 컴파일, 빌드(패키지 작성 : war, jar), 배포
+    - gradle : groovy 작성, 빠름, build.gradle
+    - maven : xml 작성, 느림, 예전부터 사용하던 방식, pom.xml
+
+웹서버
+    - http:// or https:// 들어오는 요청 처리해주는 서버
+    - apache 웹서버, NginX
+
+WAS(Web Application Server)
+    - 자바 코드로 작성된 페이지 해석해주는 서버
+
+웹서버 + WAS : 서버
+ => Tomcat (무료)
+ => Spring Boot에는 Tomcat이 내장되어 있음
+ => http://localhost:8080/
+
+에러 : caused by ~~
+
+컨트롤러 
+
+
+
+500 에러는 서버쪽 에러
+(1) TemplateInputException : html 없어서 오류
+
+스프링 프레임워크 화면단
+JSP(*.jsp) : html 코드 + 자바코드(기본 지원)
+템플릿
+
+스프링 부트 화면단
+1. 템플릿 : thymeleaf, freemaker, mstache...
+2. react
+3. jsp(스프링부트는 기본적으로 jsp 지원안함 => 따로 설정 필요)
+
+
+
+스프링 부트 동작방식
+(1) DispatcherServlet : 웹 요청을 처음에 받음
+(2) 요청 경로 파악 후 HandlerMapping, HandlerAdapter 객체 사용
+(3) 적절한 컨트롤러로 요청 넘김
+(4) 컨트롤러 작업 수행 후 결과를 템플릿과 함께 리턴
+(5) 클라이언트 화면에 내용이 보여지게 됨 
+
+템플릿 규칙
+void : http://localhost:8080/home 요청 시 사용했던 경로에서 마지막에 존재하는 경로에 html을 붙일 것 (home.html)
+    - void : http://localhost:8080/content/home : content/home.html
+    - void : http://localhost:8080/board/add : board/add.html
+
+String : return값에 html 붙이기
+
+
+
+@Controller : 해당 클래스가 컨트롤러 역할임을 명시
+    - 프레임워크가 해당 클래스를 관리함 (new 한 후 관리)
+    - 경로 중복 금지
