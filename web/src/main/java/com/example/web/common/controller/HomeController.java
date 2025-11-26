@@ -1,4 +1,4 @@
-package com.example.web.controller;
+package com.example.web.common.controller;
 
 import org.springframework.stereotype.Controller;
 
@@ -7,13 +7,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+
 @Log4j2
 @Controller
-public class BoardController {
-    
-    @GetMapping("/board/list")
-    public void getList() {
-        log.info("/board/list 요청");
+public class HomeController {
+
+    @GetMapping("/")
+    public String getHome() {
+        return "home";
+    }
+        @GetMapping("/separate")
+    public void getSeparate() {
+        
     }
     
 }

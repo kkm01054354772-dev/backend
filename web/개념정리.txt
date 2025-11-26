@@ -1,0 +1,77 @@
+gradle 빌드 코드(터미널에 입력)
+./gradlew build
+
+
+
+스프링부트 화면단
+1. 템플릿 - jsp
+2. 템플릿 - thymeleaf
+3. react
+
+----------[thymeleaf]----------
+
+${} : 객체 or 변수 값 표현
+@{} : Link 표현
+${#} 
+ ㄴ 날짜 /시간 표현식 
+ ㄴ "${#temporals.format(dto.regDate, 'yyyy-MM-dd HH:mm')}"
+
+th:text : 일반 태그용
+th:value : form 태그용
+
+반복문
+th:each = "임의지정(, 상태변수): ${컨트롤러에서 사용한 이름}"
+    상태변수를 이용해 index, count, size, even/odd 추출 가능
+
+조건문
+th:if = else 없음 
+th:unless 
+
+th:switch
+th:case
+
+링크
+ <a th:href="@{컨트롤러경로}">
+ <a href="/new?no=1"> == <a th:href="@{/new(no='1')}">
+ 
+ static 폴더 하위 경로
+ <script th:src="@{/js/my.js}"></script>
+ <link th:href="@{/css/my.css}" rel="stylesheet">
+ <img th:src="@{/img/shirt1.jpg}">
+
+
+
+
+
+layout.html : 전체 레이아웃 정의
+ - 변경되지 않은 디자인 작성
+ 
+ - 변경되는 부분은 thymeleaf 기본방식
+ <div th:replace=""></div> : 이 태그를 대체하면서 디자인 영역이 적용
+ <div th:insert=""></div> : 이 태그 사이에 디자인 영역이 적용
+ 
+thymeleaf-layout dialect
+ - thymeleaf 기본방식 + 상속
+ - layout:decorate="~{layouts/default}"
+
+
+-------------------------------------
+Model : 컨트롤러가 뷰에 데이터를 전달하기 위해 사용하는 인터페이스
+    controller에서 html 이동하는 경우에 사용
+
+HttpSession : 컨트롤러가 뷰에 데이터를 전달하기 위해 사용
+    controller에서 html 이동(forward) + redirect 가능
+--------------------------------------
+데이터 유효성 검사
+DB에 들어갈 데이터들은 무결해야 함
+(1) front => js
+(2) backend => Spring validation
+        @NotEmpty
+        @NotBlank
+        @Length(min=3,max=7)
+        @Email
+        @Max(숫자) : 지정한 숫자보다 작은가
+        @Min(숫자) : 지정한 숫자보다 큰가
+        @NotNull
+        @Size
+        @Pattern(정규식) 
