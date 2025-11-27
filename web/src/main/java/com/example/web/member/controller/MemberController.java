@@ -48,12 +48,18 @@ public class MemberController {
         log.info("/member/register 요청");
     }
 
-    // BindingResult는 반드시 Valid 검사 바로 뒤에 들어와야 함
+    // BindingResult는 반드시 Valid 검사 요소 바로 뒤에 들어와야 함
     @PostMapping("/member/register")
     public String postRegister(@Valid RegisterDTO dto, BindingResult result) {
         log.info("회원가입 요청 {}", dto);
 
         if (result.hasErrors()) {
+            
+            // for(Object fieldError : result.getAllErrors()){
+            //     System.out.println(fieldError);
+            // }
+
+
             return "/member/register";
         }
 
