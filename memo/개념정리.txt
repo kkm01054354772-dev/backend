@@ -1,3 +1,56 @@
+jpa 프로젝트 생성
+- spring web, lombok, thymeleaf, dev tools, validation
+- spring jpa, mysql
+
+데이터베이스 연동
+ - java + DB 연동 => JDBC
+
+데이터베이스 작업을 쉽게 도와주는 라이브러리 
+(1) MyBatis
+(2) ORM(Object Relational Mapping)
+        테이블 행 하나 == 객체
+        ==> JPA(Java Persistence API) : Java에서 DB API 
+        ==> 기술로 구현 : Hibernate
+
+
+entity : 데이터베이스 테이블 연동 객체
+repository : 
+
+
+Entity 작성 어노테이션
+@Entity : 이 클래스는 테이블과 연동되어 있음
+@Id : PK
+        기본키를 자동으로 증가시킬 때 : MYSQL (auto_increment) / Oracle (sequence)
+
+
+spring-boot-starter-test : 애플리케이션 테스트 라이브러리 포함
+ ㄴ JUnit
+
+@SpringBootTest : spring boot test 클래스라는 의미
+테스트 클래스 내부에 작성하는 메소드 위에 무조건 @Test 어노테이션 넣어야 함
+
+@Autowired
+private StudentRepository studentRepository;
+
+스프링(부트) 프레임워크
+=> 개발자가 할 일 축소
+=> 객체 생성 => 사용
+        A obj = new A();
+        obj.method();
+=> new 해야 할 객체를 알려주기(어노테이션 통해서 알려주기)
+        @Controller, @Service, @Repository, @Component
+
+=> 주입 : @Autowired
+
+
+웹어플리케이션
+웹서버 + WAS(컨테이너(톰캣))
+톰캣 아래에 지정된 폴더에 작성된 프로젝트 배포 => gradle 사용
+./gradlew build
+
+
+
+
 @Autowired: 주입
 
 일반 자바
