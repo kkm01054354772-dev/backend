@@ -1,4 +1,4 @@
-package com.example.jpa.repository;
+package com.example.student.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.example.jpa.entity.Student;
-import com.example.jpa.entity.constant.Grade;
+import com.example.student.entity.Student;
+import com.example.student.entity.constant.Grade;
 
 @SpringBootTest
 public class StudentRepositoryTest {

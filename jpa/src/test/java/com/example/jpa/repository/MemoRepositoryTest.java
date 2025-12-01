@@ -1,15 +1,13 @@
-package com.example.memo.repository;
+package com.example.jpa.repository;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.example.memo.entity.Memo;
+import com.example.jpa.entity.Memo;
 
-@Disabled
 @SpringBootTest
 public class MemoRepositoryTest {
     

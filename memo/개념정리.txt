@@ -1,0 +1,17 @@
+@Autowired: 주입
+
+일반 자바
+Memo memo = new Memo();
+MemoService service= new MemoService();
+
+
+
+주입 : @Autowired, @Inject
+
+전체메모 조회 : /memo/list
+하나의 메모 조회 : /memo/read?id=1
+하나의 메모 수정 
+    (1) 수정할 메모 가져오기 : /memo/modify?id=1 + get
+    (2) 수정 후 보내기 : /memo/modify?id=1 + post
+하나의 메모 삭제 : /memo/remove?id=1
+새로운 메모 삽입 : /memo/create
