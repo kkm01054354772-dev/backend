@@ -23,12 +23,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @EntityListeners(value = AuditingEntityListener.class)
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Table(name = "stutbl")
 @Entity // ==  이 클래스는 테이블과 연동되어 있음
 public class Student {
@@ -57,9 +59,11 @@ public class Student {
     @Column
     private Grade grade;
 
+    @CreationTimestamp // insert 시 자동으로 일자 삽입
+    private LocalDateTime createDateTime1; // create_date_time1 datetime(6),
 
     @CreatedDate // spring boot 설정 후 삽입
-    private LocalDateTime createDateTime; // create_date_time2 datetime(6),
+    private LocalDateTime createDateTime2; // create_date_time2 datetime(6),
 
     @LastModifiedDate // spring boot 설정 후 삽입
     private LocalDateTime updateDateTime; // create_date_time2 datetime(6),
@@ -69,6 +73,6 @@ public class Student {
     }
 
     public void changeGrade(Grade grade) {
-        this.grade=grade;
+        this.grade = grade;
     }
 }
