@@ -4,36 +4,45 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.example.jpa.entity.constant.Grade;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-
-@EntityListeners(value= AuditingEntityListener.class)
+@EntityListeners(value = AuditingEntityListener.class)
+@Getter
 @Builder
-@Table(name="stutbl")
-@Entity // 이 클래스는 테이블과 연동되어 있음
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "stutbl")
+@Entity // ==  이 클래스는 테이블과 연동되어 있음
 public class Student {
-    
-    // @GeneratedValue(strategy = GenerationType.AUTO) == @GeneratedValue : default (Hibernate가 생성 방식 알아서)
-    
-    // @SequenceGenerator(name="stu_seq_gen", sequenceName = "stu_seq", allocationSize = 1)
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="stu_seq_gen")
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // MYSQL (auto_increment), Oracle(sequence)
+    // @GeneratedValue(strategy = GenerationType.AUTO) == @GeneratedValue : default(Hibernate 가 자동으로 생성)
+    
+    // @SequenceGenerator(name = "stu_seq_gen", sequenceName = "stu_seq", allocationSize = 1)
+    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stu_seq_gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL(auto_incerement), Oracle(sequence) 
     @Id
     private Long id;
 
-    // @Column(name = "sname", length=50, nullable = false, unique = true)
-    @Column(columnDefinition = "varchar(50) not null unique")
+    //@Column(name = "sname", length = 50, nullable = false, unique = true) //  sname varchar(50) not null,
+    @Column(columnDefinition = "varchar(50) not null")
     private String name;
 
     @Column
@@ -42,9 +51,22 @@ public class Student {
     @Column(columnDefinition = "varchar(1) CONSTRAINT chk_gender CHECK (gender IN ('M','F'))")
     private String gender;
 
+
+    // grade => FRESHMAN, SOPHOMORE, JUNIOR, SENIOR
+    @Enumerated(EnumType.STRING)  // 기본값은 숫자인 0 부터 시작
+    @Column
+    private Grade grade;
+
     @CreationTimestamp // insert 시 자동으로 일자 삽입
-    private LocalDateTime createDateTime1; // create_date_time1 datetime(6)
+    private LocalDateTime createDateTime1; // create_date_time1 datetime(6),
 
     @CreatedDate // spring boot 설정 후 삽입
-    private LocalDateTime createDateTime2; // create_date_time2 datetime(6)
+    private LocalDateTime createDateTime2; // create_date_time2 datetime(6),
+
+    @LastModifiedDate // spring boot 설정 후 삽입
+    private LocalDateTime updateDateTime; // create_date_time2 datetime(6),
+
+    public void changeName(String name) {
+        this.name = name;
+    }
 }

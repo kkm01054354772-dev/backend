@@ -1,13 +1,10 @@
 package com.example.jpa.repository;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.jpa.entity.Student;
-import com.example.jpa.entity.constant.Grade;
 
 @SpringBootTest
 public class StudentRepositoryTest {
@@ -15,45 +12,25 @@ public class StudentRepositoryTest {
     @Autowired
     private StudentRepository studentRepository;
 
-
-    // @Test
-    // public void updateTest(){
-    //     // Entity
-    //     // update student set 수정컬럼=값 where id=1;
-
-    //     Optional<Student> result = studentRepository.findById(1L);  
-        
-    //     Student student = result.get();
-    //     student.changeName("성춘향");       
-
-    //     // insert(c), update(u) 작업 시 호출
-    //     studentRepository.save(student);        
-    // }
-
-
-
     @Test
     public void insertTest(){
-        // Entity
         Student student = Student.builder()
         .name("김희선")
         .addr("부산")
-        .gender("F")   
-        .grade(Grade.JUNIOR)     
+        .gender("F")
         .build();
 
         // insert(c), update(u) 작업 시 호출
         studentRepository.save(student);
 
-        // delete from ~ 호출
+        // delete from 호출
         // studentRepository.delete(student);
-        // studentRepository.deleteById(student);
+        // studentRepository.deleteById(null);
 
-        // select * from  where id = 1;
+        // select * from where id = 1;
         // studentRepository.findById(null);
-        // select * from  ;
+        // select * from ; 
         // studentRepository.findAll();
     }
-    
 
 }
