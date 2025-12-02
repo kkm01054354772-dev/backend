@@ -21,10 +21,12 @@ public class StudentService {
     private final ModelMapper modelMappler;
 
     // service 클래스 목적 : CRUD 작업을 위한 메소드 호출 후 받은 결과를 컨트롤러로 리턴
-    public void insert(StudentDTO dto){
+    public String insert(StudentDTO dto){
         // dto => entity 변경
         Student student = modelMappler.map(dto,Student.class);
-        studentRepository.save(student).getName();
+        
+
+        return studentRepository.save(student).getName();
     }
     public StudentDTO read(Long id){
         Student student= studentRepository.findById(id).orElseThrow();

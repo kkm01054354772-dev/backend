@@ -1,0 +1,20 @@
+Student Controller
+
+학생등록 
+    GET : /student/register (등록화면 보여주기)
+    POST : /student/register (실제로 등록)
+학생정보수정 
+    GET : /student/modify?id=3 (학생정보 보여주기)
+    POST : /student/modify (실제로 수정)
+학생정보조회 
+    GET : /student/read/?id=3 
+학생탈퇴 
+    POST : /student/remove
+
+학생전체조회
+    GET : /student/list
+
+
+---
+"${dto.grade.name()}=='FRESHMAN'" : thymeleaf 해석
+"${dto.grade.name() == 'JUNIOR'}" : SpringEL 해석

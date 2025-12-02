@@ -59,11 +59,10 @@ public class Student {
     @Column
     private Grade grade;
 
-    @CreationTimestamp // insert 시 자동으로 일자 삽입
-    private LocalDateTime createDateTime1; // create_date_time1 datetime(6),
+    
 
     @CreatedDate // spring boot 설정 후 삽입
-    private LocalDateTime createDateTime2; // create_date_time2 datetime(6),
+    private LocalDateTime createDateTime; // create_date_time2 datetime(6),
 
     @LastModifiedDate // spring boot 설정 후 삽입
     private LocalDateTime updateDateTime; // create_date_time2 datetime(6),
