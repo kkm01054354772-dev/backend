@@ -3,6 +3,7 @@ package com.example.memo.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +36,20 @@ public class MemoService {
         // ~~DTO :  service => controller, controller => service
 
         // 리턴하기 전 Memo entity => MemoDTO 로 변경 후 리턴
-        List<MemoDTO> list = new ArrayList<>();
-        for (Memo memo : memos) {
-            MemoDTO dto = MemoDTO.builder()
-            .id(memo.getId())
-            .text(memo.getText())
-            .createDate(memo.getCreateDate())
-            .updateDate(memo.getUpdateDate())
-            .build();
-            list.add(dto);
-        }
+        // List<MemoDTO> list = new ArrayList<>();
+        // for (Memo memo : memos) {
+        //     MemoDTO dto = MemoDTO.builder()
+        //     .id(memo.getId())
+        //     .text(memo.getText())
+        //     .createDate(memo.getCreateDate())
+        //     .updateDate(memo.getUpdateDate())
+        //     .build();
+        //     list.add(dto);
+        // }
+
+        List<MemoDTO> list = memos.stream().map(memo->modelMapper.map(memo,MemoDTO.class)).collect(Collectors.toList());
+
+
         return list;
     }
 

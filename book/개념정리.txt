@@ -1,0 +1,12 @@
+Book
+id : auto_increment
+code(unique) : B10102
+title : 개미
+price : 12800
+author : 베르나르 베르베르
+
+테이블 생성
+1. 직접 : create table
+2. JPA 이용 : properties -> ddl-auto = create 
+ 
+
