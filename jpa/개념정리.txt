@@ -1,0 +1,4 @@
+    @ManyToOne(optional = true) : null 허용하는 조인컬럼 생성
+    @ManyToOne(optional = false) : null 허용하지 않는 조인컬럼 생성
+    @JoinColumn(name = "team_id") // 원하는 조인 컬럼명 설정
+        안하면 =>private Team team ; => 오라클 테이블명_기본키명(team_team_id으로 나옴)

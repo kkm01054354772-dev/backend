@@ -24,13 +24,13 @@ public class BookService {
     // CRUD 메소드 호출하는 서비스 메소드 작성
 
     // C
-    public Long create(BookDTO bookDTO) {
+    public String create(BookDTO bookDTO) {
         // bookDTO => entity 변경
         // 1. 코드작성
         // 2. ModelMapper 라이브러리 사용
         Book book = mapper.map(bookDTO, Book.class);
 
-        return bookRepository.save(book).getId();
+        return bookRepository.save(book).getTitle();
     }
 
     // R
@@ -65,10 +65,17 @@ public class BookService {
         return mapper.map(book, BookDTO.class);
     }
 
+    public List<BookDTO> readAll() {
+        List<Book> result = bookRepository.findAll();
+
+        return result.stream().map(book -> mapper.map(book, BookDTO.class)).collect(Collectors.toList());
+    }
+
     // U
     public Long update(BookDTO upDto) {
         Book book = bookRepository.findById(upDto.getId()).orElseThrow();
         book.changePrice(upDto.getPrice());
+        book.changeDescription(upDto.getDescription());
         return bookRepository.save(book).getId();
     }
 
