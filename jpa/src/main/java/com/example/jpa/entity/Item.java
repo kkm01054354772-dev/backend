@@ -27,16 +27,14 @@ import lombok.NoArgsConstructor;
 
 import lombok.ToString;
 
-
 @ToString
-@EntityListeners(value = AuditingEntityListener.class)
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="itemtbl")
+@Table(name = "itemtbl")
 @Entity
-public class Item {
+public class Item extends BaseEntity {
 
     @Id
     private String code;
@@ -55,12 +53,6 @@ public class Item {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus;
-
-    @CreatedDate
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    private LocalDateTime updateDate;
 
     public void changeItemSellStatus(ItemSellStatus itemSellStatus) {
         this.itemSellStatus = itemSellStatus;

@@ -6,12 +6,13 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.jpa.entity.Team;
 import com.example.jpa.entity.TeamMember;
 
 import jakarta.persistence.OneToMany;
-import jakarta.transaction.Transactional;
 
 @SpringBootTest
 public class TeamRepositoryTest {
@@ -25,11 +26,12 @@ public class TeamRepositoryTest {
     @Test
     public void insertTest() {
         // 팀 생성
-        Team team = Team.builder().name("team3").build();
+        Team team = Team.builder().name("team5").build();
         teamRepository.save(team);
         // 팀원 추가
         TeamMember member = TeamMember.builder().name("홍길동").team(team).build();
         teamMemberRepository.save(member);
+
     }
 
     @Test
@@ -157,5 +159,44 @@ public class TeamRepositoryTest {
         TeamMember member = teamMemberRepository.findById(6L).get();
         System.out.println(member);
         System.out.println(member.getTeam());
+    }
+
+    // cascade 개념 적용
+    @Test
+    public void insertCascadeTest() {
+        Team team = Team.builder().name("new").build();
+        team.getMembers().add(TeamMember.builder().name("강감찬").team(team).build());
+
+        teamRepository.save(team);
+    }
+
+    @Test
+    public void removeCascadeTest() {
+
+        teamRepository.deleteById(5L);
+    }
+
+    // orphanRemoval = true 적용
+    @Commit
+    @Transactional
+    @Test
+    public void removeOrphanTest() {
+        Team team = teamRepository.findById(6L).get();
+        team.getMembers().remove(0);
+        teamRepository.save(team);
+    }
+
+    // dirty checking 적용
+    @Commit
+    @Transactional
+    @Test
+    public void updateCascadeTest() {
+
+        Team team = teamRepository.findById(7L).get();
+        team.changeName("sunflower");
+        TeamMember teamMember = team.getMembers().get(0);
+        teamMember.changeName("홍시루");
+
+        // teamRepository.save(team);
     }
 }

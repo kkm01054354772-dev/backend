@@ -20,16 +20,14 @@ import lombok.NoArgsConstructor;
 
 import lombok.ToString;
 
-
 @ToString
-@EntityListeners(value = AuditingEntityListener.class)
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="boardtbl")
+@Table(name = "boardtbl")
 @Entity
-public class Board {
+public class Board extends BaseEntity {
     // id(자동 순번), 제목(title), 내용(content-1500), 작성자(writer-20)
     // 작성일,수정일
 
@@ -45,12 +43,6 @@ public class Board {
 
     @Column(nullable = false, length = 20)
     private String writer;
-
-    @CreatedDate
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    private LocalDateTime updateDate;
 
     public void changeTitle(String title) {
         this.title = title;

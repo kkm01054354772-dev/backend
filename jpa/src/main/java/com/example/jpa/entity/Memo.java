@@ -19,34 +19,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-
 @ToString
-@EntityListeners(value = AuditingEntityListener.class)
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Table(name = "memotbl")
 @Entity
-public class Memo {
+public class Memo extends BaseEntity {
     // 테이블(memotbl) 컬럼 : mno, memo_text, create_date, update_date
     // 클래스 필드명 == 테이블 컬럼명
     // 클래스 필드명 != 테이블 컬럼명(@Column(name=""))
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name="mno")
+    @Column(name = "mno")
     private Long id;
 
     @Column(nullable = false, name = "memo_text")
-    private String text; 
-
-    @CreatedDate
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    private LocalDateTime updateDate;
-
+    private String text;
 
     // text 수정 메소드
     public void changeText(String text) {

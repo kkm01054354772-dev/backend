@@ -39,4 +39,7 @@ public class TeamMember {
         this.team = team;
     }
 
+    public void changeName(String name) {
+        this.name = name;
+    }
 }

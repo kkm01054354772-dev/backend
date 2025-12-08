@@ -25,25 +25,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@EntityListeners(value = AuditingEntityListener.class)
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Table(name = "stutbl")
-@Entity // ==  이 클래스는 테이블과 연동되어 있음
-public class Student {
+@Entity // == 이 클래스는 테이블과 연동되어 있음
+public class Student extends BaseEntity {
 
-    // @GeneratedValue(strategy = GenerationType.AUTO) == @GeneratedValue : default(Hibernate 가 자동으로 생성)
-    
-    // @SequenceGenerator(name = "stu_seq_gen", sequenceName = "stu_seq", allocationSize = 1)
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stu_seq_gen")
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL(auto_incerement), Oracle(sequence) 
+    // @GeneratedValue(strategy = GenerationType.AUTO) == @GeneratedValue :
+    // default(Hibernate 가 자동으로 생성)
+
+    // @SequenceGenerator(name = "stu_seq_gen", sequenceName = "stu_seq",
+    // allocationSize = 1)
+    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
+    // "stu_seq_gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL(auto_incerement), Oracle(sequence)
     @Id
     private Long id;
 
-    //@Column(name = "sname", length = 50, nullable = false, unique = true) //  sname varchar(50) not null,
+    // @Column(name = "sname", length = 50, nullable = false, unique = true) //
+    // sname varchar(50) not null,
     @Column(columnDefinition = "varchar(50) not null")
     private String name;
 
@@ -53,20 +56,19 @@ public class Student {
     @Column(columnDefinition = "varchar(1) CONSTRAINT chk_gender CHECK (gender IN ('M','F'))")
     private String gender;
 
-
     // grade => FRESHMAN, SOPHOMORE, JUNIOR, SENIOR
-    @Enumerated(EnumType.STRING)  // 기본값은 숫자인 0 부터 시작
+    @Enumerated(EnumType.STRING) // 기본값은 숫자인 0 부터 시작
     @Column
     private Grade grade;
 
-    @CreationTimestamp // insert 시 자동으로 일자 삽입
-    private LocalDateTime createDateTime1; // create_date_time1 datetime(6),
+    // @CreationTimestamp // insert 시 자동으로 일자 삽입
+    // private LocalDateTime createDateTime1; // create_date_time1 datetime(6),
 
-    @CreatedDate // spring boot 설정 후 삽입
-    private LocalDateTime createDateTime2; // create_date_time2 datetime(6),
+    // @CreatedDate // spring boot 설정 후 삽입
+    // private LocalDateTime createDateTime2; // create_date_time2 datetime(6),
 
-    @LastModifiedDate // spring boot 설정 후 삽입
-    private LocalDateTime updateDateTime; // create_date_time2 datetime(6),
+    // @LastModifiedDate // spring boot 설정 후 삽입
+    // private LocalDateTime updateDateTime; // create_date_time2 datetime(6),
 
     public void changeName(String name) {
         this.name = name;

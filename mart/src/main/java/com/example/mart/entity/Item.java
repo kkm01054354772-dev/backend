@@ -1,0 +1,44 @@
+package com.example.mart.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = "orderItems")
+@Entity
+@Table(name = "mart_item")
+public class Item {
+    // id, name, price, quantity
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private int price;
+
+    @Column(nullable = false)
+    private int quantity;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "item")
+    private List<OrderItem> orderItems = new ArrayList<>();
+}
