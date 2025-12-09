@@ -8,12 +8,13 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.book.entity.Book;
 
 import jakarta.persistence.EntityNotFoundException;
 
-@Disabled
+// @Disabled
 @SpringBootTest
 public class BookRepositoryTest {
 
@@ -88,4 +89,22 @@ public class BookRepositoryTest {
         System.out.println(list);
     }
 
+    @Test
+    public void testFindBy() {
+        List<Book> list = bookRepository.findByAuthor("천인국0");
+        System.out.println("findByAuthor(천인국0) : " + list);
+
+        list = bookRepository.findByAuthorEndingWith("0");
+        System.out.println("findByAuthorEndingWith(0) : " + list);
+
+        list = bookRepository.findByAuthorStartingWith("천");
+        System.out.println("findByAuthorStartingWith(천) : " + list);
+
+        list = bookRepository.findByAuthorContaining("인");
+        System.out.println("findByAuthorContaing(인) : " + list);
+
+        list = bookRepository.findByPriceBetween(12000, 36000);
+        System.out.println("findByPriceBetween(12000,36000) : " + list);
+
+    }
 }

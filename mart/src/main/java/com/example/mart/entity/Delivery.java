@@ -1,50 +1,47 @@
 package com.example.mart.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.example.mart.entity.constant.DeliveryStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Getter
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "orders")
+@ToString(exclude = { "order" })
 @Entity
-@Table(name = "mart_member")
-
-public class Member extends BaseEntity {
-    // id, name. city, street, zipcode
+public class Delivery extends BaseEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @Column(name = "delivery_id")
     private Long id;
 
+    // 주소
     @Column(nullable = false)
-    private String name;
-
     private String city;
-
+    @Column(nullable = false)
     private String street;
-
+    @Column(nullable = false)
     private String zipcode;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "member")
-    private List<Order> orders = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DeliveryStatus DeliveryStatus;
 
-    public void changeCity(String city) {
-        this.city = city;
-    }
+    @OneToOne(mappedBy = "delivery") // order: deliver => 1 : 1
+    private Order order;
 }
