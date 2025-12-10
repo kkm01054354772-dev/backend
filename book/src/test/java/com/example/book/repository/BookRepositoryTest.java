@@ -8,13 +8,17 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.book.entity.Book;
+import com.example.book.entity.QBook;
 
 import jakarta.persistence.EntityNotFoundException;
 
-// @Disabled
+@Disabled
 @SpringBootTest
 public class BookRepositoryTest {
 
@@ -105,6 +109,46 @@ public class BookRepositoryTest {
 
         list = bookRepository.findByPriceBetween(12000, 36000);
         System.out.println("findByPriceBetween(12000,36000) : " + list);
+    }
+
+    // ---------------------
+    // querydsl 라이브러리 추가 / QuerydslPredicatExecutor 상속
+    // ---------------------
+    @Test
+    public void querydslTest() {
+
+        QBook book = QBook.book; // 객체 생성
+
+        // where b1_0.title=?
+        System.out.println(bookRepository.findAll(book.title.eq("title1")));
+        // where b1_0.title like %?%
+        System.out.println(bookRepository.findAll(book.title.contains("파워")));
+        // where b1_0.title like %?% and b1_0.id>?
+        System.out.println(bookRepository.findAll(book.title.contains("파워").and(book.id.gt(3))));
+        // where b1_0.title like %?% and b1_0.id>? order by id desc
+        System.out.println(
+                bookRepository.findAll(book.title.contains("파워").and(book.id.gt(3)), Sort.by("id").descending()));
+        // where author '%천%' or title = '%파워%'
+        System.out.println(bookRepository.findAll(book.title.contains("파워").or(book.author.contains("천"))));
+
+        // bookRepository.findall(Predicate predicate, Pageable pageable)
+        PageRequest pageRequest = PageRequest.of(0, 20);
+        Page<Book> result = bookRepository.findAll(book.id.gt(0L), pageRequest);
 
     }
+
+    @Test
+    public void pageTest() {
+        // bookRepository.findAll(Pageable pageable);
+        // limit ?, ? : 특정 범위만 가져오기
+        // select count(b1_0.id) : 전체 행의 개수
+        PageRequest pageRequest = PageRequest.of(0, 20);
+        Page<Book> result = bookRepository.findAll(pageRequest);
+
+        System.out.println("page size : " + result.getSize());
+        System.out.println("total pages : " + result.getTotalPages());
+        System.out.println("total elements : " + result.getTotalElements()); // 전체 행의 개수
+        System.out.println("content : " + result.getContent());
+    }
+
 }

@@ -14,5 +14,7 @@ author : 베르나르 베르베르
 쿼리 생성
 1. findBy ~~ : select (Spring Data JPA)
 2. @Query("쿼리구문")
-   @Query("쿼리구문", nativeQuery=true) : SQL 구문
+   @Query("쿼리구문", nativeQuery=true) : SQL 구문 사용
 3. Querydsl : 동적인 상황에 대한 처리가 훨씬 편함
+      ㄴ 외부 라이브러리 이용 必
+      
