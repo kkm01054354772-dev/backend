@@ -2,12 +2,22 @@ package com.example.board.repository;
 
 import static org.mockito.ArgumentMatchers.isNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.board.member.entity.Member;
 import com.example.board.member.repository.MemberRepository;
@@ -16,6 +26,7 @@ import com.example.board.post.repository.BoardRepository;
 import com.example.board.reply.entity.Reply;
 import com.example.board.reply.repository.ReplyRepository;
 
+// @Disabled
 @SpringBootTest
 public class BoardRepositoryTest {
     @Autowired
@@ -65,9 +76,102 @@ public class BoardRepositoryTest {
         });
     }
 
+    // board 읽기
+    @Transactional(readOnly = true)
+    @Test
+    public void readBoardTest() {
+        // JPA 제공
+        List<Board> list = boardRepository.findAll();
+        list.forEach(board -> {
+            System.out.println(board);
+            System.out.println(board.getWriter());
+        });
+    }
+
+    @Test
+    public void getBoardWithWriterListTest() {
+        List<Object[]> result = boardRepository.getBoardWithWriterList();
+        for (Object[] objects : result) {
+            System.out.println(Arrays.toString(objects));
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Test
+    public void getBoardWithWriterTest() {
+        // JPA
+        Board board = boardRepository.findById(33L).get();
+        System.out.println(board);
+        // 댓글
+        System.out.println(board.getReplies());
+    }
+
+    @Test
+    public void getBoardWithWriterTest2() {
+        // JPQL (@Query)
+        List<Object[]> result = boardRepository.getBoardWithReply(33L);
+        // for (Object[] objects : result) {
+        // System.out.println(Arrays.toString(objects));
+        // }
+
+        result.forEach(obj -> System.out.println(Arrays.toString(obj)));
+    }
+
+    @Test
+    public void getBoardWithReplyCountTest() {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+
+        Page<Object[]> result = boardRepository.getBoardWithReplyCount(pageable);
+        // for (Object[] objects : result) {
+
+        // // System.out.println(Arrays.toString(objects));
+
+        // Board board = (Board) objects[0];
+        // Member member = (Member) objects[1];
+        // Long replyCnt = (Long) objects[2];
+
+        // System.out.println(board);
+        // System.out.println(member);
+        // System.out.println(replyCnt);
+        // }
+
+        // Stream<Object[]> data = result.get();
+        // Stream<Object[]> data2 = result.getContent().stream();
+
+        result.get().forEach(obj -> {
+            // System.out.println(Arrays.toString(obj));
+            Board board = (Board) obj[0];
+            Member member = (Member) obj[1];
+            Long replyCnt = (Long) obj[2];
+        });
+
+        // Object[] => String
+        Function<Object[], String> f = Arrays::toString;
+        // Object[] objects
+        result.get().forEach(obj -> System.out.println(f.apply(obj))); // [Ljava.lang.Object;@1d302061
+
+    }
+
+    @Test
+    public void getBoardByBnoTest() {
+        Object result = boardRepository.getBoardByBno(33L);
+        Object[] arr = (Object[]) result;
+        System.out.println(Arrays.toString(arr));
+
+    }
+
+    @Commit
+    @Transactional
+    @Test
+    public void deleteByBnoTest() {
+        replyRepository.deleteByBno(100L);
+        boardRepository.deleteById(100L);
+    }
+
     // querydsl 테스트
     @Test
     public void listTest() {
+        // on 구문 생략 : 일치하는 컬럼
         List<Object[]> result = boardRepository.list();
         System.out.println(result);
     }
