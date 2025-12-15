@@ -3,6 +3,7 @@ package com.example.board.post.service;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +34,15 @@ public class BoardService {
 
     // CRUD
 
+    public Long insert(BoardDTO dto) {
+
+        Member member = Member.builder().email(dto.getWriterEmail()).build();
+
+        Board board = Board.builder().title(dto.getTitle()).content(dto.getContent()).writer(member).build();
+
+        return boardRepository.save(board).getBno();
+    }
+
     public void delete(BoardDTO dto) {
         // 게시글 삭제
         // 댓글 (자식 객체)
@@ -61,7 +71,12 @@ public class BoardService {
     @Transactional(readOnly = true)
     public PageResultDTO<BoardDTO> getList(PageRequestDTO requestDTO) {
         Pageable pageable = PageRequest.of(requestDTO.getPage() - 1, requestDTO.getSize(), Sort.by("bno").descending());
-        Page<Object[]> result = boardRepository.getBoardWithReplyCount(pageable);
+
+        // @Query 사용할 때
+        // Page<Object[]> result = boardRepository.getBoardWithReplyCount(pageable);
+
+        Page<Object[]> result = boardRepository.list(requestDTO.getType(), requestDTO.getKeyword(), pageable);
+
         // [Board(bno=100, title=title....100, content=content....100)....
         // Member(email=user1@gmail.com, password=1111, name=user1), 2]
         // 번호, 제목(댓글개수), 작성자, 작성일
@@ -75,9 +90,6 @@ public class BoardService {
                 .pageRequestDTO(requestDTO)
                 .totalCount(totalCount).build();
         return pageResultDTO;
-    }
-
-    public void insert(BoardDTO dto) {
     }
 
     // entity => dto

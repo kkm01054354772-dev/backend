@@ -6,13 +6,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.board.post.dto.BoardDTO;
 import com.example.board.post.dto.PageRequestDTO;
 import com.example.board.post.dto.PageResultDTO;
-import com.example.board.post.entity.Board;
 import com.example.board.post.service.BoardService;
 
 @Disabled

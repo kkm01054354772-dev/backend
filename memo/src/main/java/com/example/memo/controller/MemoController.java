@@ -2,6 +2,8 @@ package com.example.memo.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.memo.dto.MemoDTO;
@@ -25,10 +29,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 @RequestMapping("/memo")
 @Log4j2
-@Controller
+@Controller // template 필요
 public class MemoController {
 
     private final MemoService memoService;
+
+    @ResponseBody // 리턴값은 데이터라는 의미
+    @GetMapping("/hello")
+    public String getHello() {
+        return "Hello World"; // 문자열은 부라우저 해석 가능
+    }
+
+    @ResponseBody
+    @GetMapping("/sample1/{id}")
+    public MemoDTO getRead(@PathVariable("id") Long id) {
+
+        MemoDTO dto = memoService.read(id);
+        return dto;
+    }
+
+    // ResponseEntity : 데이터 + 상태코드(200, 400, 500)
+
+    @GetMapping("/sample1/list")
+    public ResponseEntity<List<MemoDTO>> getRead2() {
+        List<MemoDTO> list = memoService.readAll();
+        return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+    }
 
     @GetMapping("/list")
     public void getList(Model model) {

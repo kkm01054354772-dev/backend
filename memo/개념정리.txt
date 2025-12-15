@@ -68,3 +68,40 @@ MemoService service= new MemoService();
     (2) 수정 후 보내기 : /memo/modify?id=1 + post
 하나의 메모 삭제 : /memo/remove?id=1
 새로운 메모 삽입 : /memo/create
+
+
+
+-------------------------------------
+REST
+자원(Resource)을 이름(URL)으로 구분하여 해당 자원의 상태(State)를 주고받는 방식.
+웹에서 데이터 전송 및 처리를 위한 인터페이스(RESTful API)설계에 널리 사용됨
+
+일반적인 웹 개발
+http://localhost:8080/memo/list + @GET : 목록 데이터 + 템플릿
+http://localhost:8080/memo/read?id=3 + @GET : 상세 데이터 + 템플릿
+http://localhost:8080/memo/modify?=id=3 + @GET + 템플릿
+http://localhost:8080/memo/modify + @POST : 수정 + 템플릿
+http://localhost:8080/memo/remove + @POST : 삭제 + 템플릿
+
+앱, 데스크탑, 태블릿, 노트북 ...
+
+서버에서는 데이터만
+화면단에서 다양성 제공
+
+http://localhost:8080/memo/new + POST + data => 삽입
+http://localhost:8080/memo/list + GET => data
+http://localhost:8080/memo/3 + GET => data
+http://localhost:8080/memo/3 + PUT(PATCH) + data => 수정
+http://localhost:8080/memo/3 + DELETE => 제거
+
+컨트롤러 : 데이터 전달(데이터 가져오기) => json
+--
+json 형식 -> 자바스크립트로 처리
+--
+자바스크립트 기반의 화면단 사용시 제일 편함 => react
+
+
+--
+화면단 데이터 요청
+(1) fetch : 브라우저가 기본 제공
+(2) axios : 외부 라이브러리 필요
