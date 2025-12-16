@@ -115,4 +115,23 @@ public class MemoController {
         return "redirect:/memo/list";
     }
 
+    @GetMapping("/list2")
+    public void getList() {
+        log.info("전체 메모 요청");
+
+    }
+
+    @GetMapping({ "/read2", "/modify2" })
+    public void getRead3(@RequestParam("id") Long id, Model model) {
+        log.info("특정 메모 요청{}", id);
+
+        MemoDTO dto = memoService.read(id);
+        model.addAttribute("dto", dto);
+        model.addAttribute("id", id);
+    }
+
+    @GetMapping("/create2")
+    public void getCreate2() {
+        log.info("추가 REST 페이지 요청");
+    }
 }

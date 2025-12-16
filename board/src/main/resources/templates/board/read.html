@@ -37,6 +37,7 @@
     <!-- 페이지별 개별 javascript 작성 -->
     <script th:inline="javascript">
       let msg = [[${msg}]];
+      const bno = [[${dto.bno}]];
       console.log(msg);
 
       if (msg) {
@@ -47,5 +48,6 @@
         });
       }
     </script>
+    <script th:src="@{/js/read.js}"></script>
   </th:block>
 </html>
