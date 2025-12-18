@@ -1,0 +1,51 @@
+Using generated security password:
+http://localhost:8080 => 로그인페이지
+ => spring securty 라이브러리
+
+=====================================
+
+ROLE 
+회원가입 + ROLE(일반, MEMBER, ADMIN)
+
+403 -> 권한 없는 사용자가 권한 필요한 경로에 접근
+로그인 user1 / MEMBER
+
+custom login 처리
+1. login GET 작성
+	- 아이디 해당요소 : username 
+	- 비밀번호 해당요소 : password
+2. login POST 작성 X
+3. Service 작성 : UserDetailsService 구현 클래스 작성
+	- 리턴값은 무조건 UserDetails 리턴
+		UserDetails
+		     ㅣ
+		     ㅣ
+		User
+
+=====================================
+자바
+A obj = new A()
+obj.method();
+
+스프링부트
+ ****특징****  
+    => 개발자가 직접 new를 하지 않음
+    => 스프링 컨테이너가 직접 관리( DI )
+       @Service, @Controller, @Component, @Repository
+    
+    @Component (부모에 해당)
+        ㅣ
+    @Service, @Controller, @Repository
+    
+    @Bean (클래스 대신 메소드에 적용)
+       
+
+@Autowired : 주입
+=> 주로 Test할 때 사용 (생성자를 만들 수 없기 때문)
+
+@RequiredArgsConstructor + final => 초기화를 할 때 생성자를 주입
+
+(ex)
+PostController(BoardService boardService){
+    this.boardService = boardService;
+}

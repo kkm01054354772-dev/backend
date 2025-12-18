@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form class="login-form" method="post" action="/login">
+      <h2>Please sign in</h2>
+      <!-- id : username / pw : password 가 디폴트 -->
+      <p>
+        <label for="username" class="screenreader">Username</label>
+        <input type="text" id="username" name="username" placeholder="Username" required="" autofocus="" />
+      </p>
+      <p>
+        <label for="password" class="screenreader">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" required="" />
+      </p>
+
+      <input name="_csrf" type="hidden" value="DZ-WHNmvz_FgycwOlMFydardyZbyywgZuONyIF8SqwVgyeKFOa-uKu2eqcZNr_w7pexGTZK75K_CqjA02tVDRm5xz2dS-9Hm" />
+      <button type="submit" class="primary">Sign in</button>
+    </form>
+  </body>
+</html>
