@@ -28,5 +28,6 @@ public class MemberDTO extends User {
         super(username, password, authorities);
         this.fromSocial = fromSocial;
         this.email = username;
+        this.password = password;
     }
 }

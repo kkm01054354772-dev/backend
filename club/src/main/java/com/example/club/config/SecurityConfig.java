@@ -15,6 +15,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.example.club.handler.LoginSuccessHandler;
+
 import lombok.extern.log4j.Log4j2;
 
 @EnableWebSecurity // 모든 웹 요청에 대해 Security Filter Chain을 적용
@@ -27,12 +29,16 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // 어떤 요청이든 기본 폼 형태로 로그인 폼 띄움
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/assets/**").permitAll()
-                .requestMatchers("/sample/member").hasRole("MEMBER")
-                .requestMatchers("sample/admin").hasRole("ADMIN"))
+                .requestMatchers("/", "/assets/**", "/member/auth").permitAll()
+                .requestMatchers("/member/**").hasRole("USER")
+                .requestMatchers("/manager/**").hasAnyRole("MANAGER")
+                .requestMatchers("/admin/**").hasAnyRole("ADMIN"))
                 // .httpBasic(Customizer.withDefaults()); // 위에 작은 창으로 뜸
                 // .formLogin(Customizer.withDefaults()); // 기폰 형태
-                .formLogin(login -> login.loginPage("/member/login").permitAll())
+                .formLogin(login -> login
+                        .loginPage("/member/login").permitAll()
+                        // .defaultSuccessUrl("/", true))
+                        .successHandler(loginSuccessHandler()))
                 .logout(logout -> logout
                         .logoutUrl("/member/logout") // 로그아웃 POST로 처리
                         .logoutSuccessUrl("/")
@@ -40,6 +46,11 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID"));
 
         return http.build();
+    }
+
+    @Bean
+    LoginSuccessHandler loginSuccessHandler() {
+        return new LoginSuccessHandler();
     }
 
     // 암호화

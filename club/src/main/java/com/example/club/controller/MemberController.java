@@ -23,12 +23,18 @@ public class MemberController {
         log.info("로그인 폼 요청");
     }
 
-    @ResponseBody
+    @ResponseBody // 객체라는 의미
     @GetMapping("/auth")
     public Authentication getAuthInfo() {
+        // 로그인정보 + 인증정보
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         return authentication;
+    }
+
+    @GetMapping("/profile")
+    public void getProfile() {
+        log.info("프로필 폼 요청");
     }
 
 }
