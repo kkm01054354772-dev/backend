@@ -6,13 +6,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
+
     @GetMapping("/")
     public String getHome() {
         return "home";
     }
 
     @GetMapping("/manager/info")
-    public void getManager() {
+    public void getManger() {
+
     }
 
 }

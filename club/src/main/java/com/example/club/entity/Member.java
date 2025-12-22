@@ -24,6 +24,7 @@ import lombok.ToString;
 @Table(name = "club_member")
 @Entity
 public class Member {
+
     @Id
     private String email;
 
@@ -33,7 +34,6 @@ public class Member {
 
     private boolean fromSocial;
 
-    // 1:N의 member_roles 생성
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private Set<ClubMemberRole> roles = new HashSet<>();

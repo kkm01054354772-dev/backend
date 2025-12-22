@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.club.DTO.MemberDTO;
+import com.example.club.dto.MemberDTO;
 import com.example.club.entity.Member;
 import com.example.club.repository.MemberRepository;
 
@@ -19,10 +19,10 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
 @RequiredArgsConstructor
+@Service
 @Setter
 @ToString
 @Log4j2
-@Service
 public class ClubService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
@@ -31,14 +31,14 @@ public class ClubService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("clubservice username {}", username);
 
-        // orElseThrow() => NoSuchElementException | ()-> : new
-        // UsernameNotFoundException
+        // orElseThrow() => NoSuchElementException
         Member member = memberRepository.findByEmailAndFromSocial(username, false)
-                .orElseThrow(() -> new UsernameNotFoundException("이메일 확인"));
-
+                .orElseThrow(() -> new UsernameNotFoundException("이메일 확인")); // Supplier<? extends X> exceptionSupplier
         // member => MemberDTO
-        MemberDTO dto = new MemberDTO(member.getEmail(), member.getPassword(),
-                member.isFromSocial(), member.getRoles()
+        // [user,manager,admin]
+        MemberDTO dto = new MemberDTO(member.getEmail(),
+                member.getPassword(), member.isFromSocial(),
+                member.getRoles()
                         .stream()
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                         .collect(Collectors.toSet()));

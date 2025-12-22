@@ -1,10 +1,9 @@
 package com.example.club.repository;
 
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.isNull;
 
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.club.entity.Member;
 import com.example.club.entity.constant.ClubMemberRole;
 
-// @Disabled
 @SpringBootTest
 public class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -33,9 +32,7 @@ public class MemberRepositoryTest {
                     .fromSocial(false)
                     .password(passwordEncoder.encode("1111"))
                     .build();
-
             member.addMemberRole(ClubMemberRole.USER);
-
             if (i > 8) {
                 member.addMemberRole(ClubMemberRole.MANAGER);
             }
