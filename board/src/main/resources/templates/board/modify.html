@@ -6,7 +6,8 @@
         <h5 class="card-title fw-semibold mb-4">도서 정보 수정</h5>
         <div class="card">
           <div class="card-body">
-            <form action="" method="post">
+            <!-- csrf 자동 입력 -->
+            <form th:action="@{/board/modify}" method="post">
               <div class="mb-3">
                 <label for="bno" class="form-label">BNO</label>
                 <input type="text" class="form-control" id="bno" aria-describedby="bno" name="bno" th:value="${dto.bno}" readonly />
@@ -23,13 +24,13 @@
                 <label for="createDate" class="form-label">CREATEDATE</label>
                 <input type="type" class="form-control" id="createDate" name="createDate" th:value="${#temporals.format(dto.createDate,'yyyy-MM-dd HH:mm')}" disabled />
               </div>
-
+              <input type="hidden" name="writerEmail" th:value="${dto.writerEmail}" />
               <!-- // modify 에서는 포함하지 않아도 되나, remove에선 필요로 함 -->
               <input type="hidden" name="page" th:value="${pageRequestDTO.page}" />
               <input type="hidden" name="size" th:value="${pageRequestDTO.size}" />
               <!-- // -->
-              <button type="submit" class="btn btn-primary">수정</button>
-              <button type="button" class="btn btn-danger">삭제</button>
+              <button type="submit" class="btn btn-primary" th:if="${dto.writerEmail} == ${#authentication.name}">수정</button>
+              <button type="button" class="btn btn-danger" th:if="${dto.writerEmail} == ${#authentication.name}">삭제</button>
               <a type="button" class="btn btn-success" th:href="@{/board/list(page=${pageRequestDTO.page},size=${pageRequestDTO.size})}">목록</a>
               <!-- <input type="hidden" name="page" th:value="${pageRequestDTO.page}" /> -->
             </form>

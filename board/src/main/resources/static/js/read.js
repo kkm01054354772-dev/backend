@@ -21,12 +21,12 @@ const loadReply = () => {
       let result = "";
       // data를 댓글 영역에 보여주기
       data.forEach((reply) => {
-        result += `<div class="d-flex justify-content-between my-2 border-bottom reply-row" data-rno=${reply.rno}>
+        result += `<div class="d-flex justify-content-between my-2 border-bottom reply-row" data-rno="${reply.rno}" data-email="${reply.replyerEmail}">
               <div class="p-3">
                 <img src="/img/user.png" alt="" class="rounded-circle mx-auto d-block" style="width: 60px; height: 60px" />
               </div>
               <div class="flex-grow-1 align-self-center">
-                <div class="replyer">${reply.replyer}</div>
+                <div class="replyer">${reply.replyerName}</div>
                 <div>
                   <span class="small">${reply.text}</span>
                 </div>
@@ -64,7 +64,7 @@ document.querySelector("#replyForm").addEventListener("submit", (e) => {
   const reply = {
     rno: rno,
     text: form.text.value,
-    replyer: form.replyer.value,
+    replyerEmail: form.replyerEmail.value,
     bno: bno,
   };
 
@@ -74,6 +74,7 @@ document.querySelector("#replyForm").addEventListener("submit", (e) => {
     fetch(`${url}/new`, {
       method: "POST",
       headers: {
+        "X-CSRF-TOKEN": csrfVal,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(reply),
@@ -94,7 +95,7 @@ document.querySelector("#replyForm").addEventListener("submit", (e) => {
             draggable: true,
           });
         }
-        form.replyer.value = "";
+        // form.replyer.value = "";
         form.text.value = "";
         // 댓글 불러오기
         loadReply();

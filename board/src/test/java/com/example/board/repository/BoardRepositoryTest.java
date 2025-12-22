@@ -16,10 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.board.member.entity.Member;
+import com.example.board.member.entity.constant.MemberRole;
 import com.example.board.member.repository.MemberRepository;
 import com.example.board.post.dto.PageRequestDTO;
 import com.example.board.post.entity.Board;
@@ -33,6 +35,8 @@ public class BoardRepositoryTest {
     @Autowired
     private BoardRepository boardRepository;
     @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private ReplyRepository replyRepository;
@@ -43,9 +47,16 @@ public class BoardRepositoryTest {
 
             Member member = Member.builder()
                     .email("user" + i + "@gmail.com")
-                    .password("1111")
+                    .password(passwordEncoder.encode("1111"))
+                    .fromSocial(false)
                     .name("user" + i)
                     .build();
+            member.addMemberRole(MemberRole.USER);
+
+            if (i > 9) {
+                member.addMemberRole(MemberRole.ADMIN);
+            }
+
             memberRepository.save(member);
         });
     }
@@ -68,25 +79,30 @@ public class BoardRepositoryTest {
     @Test
     public void insertReplyTest() {
         IntStream.rangeClosed(1, 100).forEach(i -> {
+
             long idx = (long) (Math.random() * 100) + 1;
             Board board = Board.builder().bno(idx).build();
 
-            Reply reply = Reply.builder().text("reply...." + i).replyer("guest...." + i).board(board).build();
+            int midx = (int) (Math.random() * 10) + 1;
+            Member member = Member.builder().email("user" + midx + "@gmail.com").build();
+
+            Reply reply = Reply.builder().text("reply...." + i).replyer(member).board(board).build();
 
             replyRepository.save(reply);
         });
     }
 
-    @Test
-    public void insertReplyTest2() {
-        Board board = Board.builder().bno(301L).build();
+    // @Test
+    // public void insertReplyTest2() {
+    // Board board = Board.builder().bno(301L).build();
 
-        IntStream.rangeClosed(1, 15).forEach(i -> {
-            Reply reply = Reply.builder().text("reply...." + i).replyer("guest...." + i).board(board).build();
+    // IntStream.rangeClosed(1, 15).forEach(i -> {
+    // Reply reply = Reply.builder().text("reply...." + i).replyer("guest...." +
+    // i).board(board).build();
 
-            replyRepository.save(reply);
-        });
-    }
+    // replyRepository.save(reply);
+    // });
+    // }
 
     // board 읽기
     @Transactional(readOnly = true)
