@@ -83,7 +83,13 @@
       const bno = [[${dto.bno}]];
       console.log(msg);
       // replyForm에서 CSRF 값 가져오기
-      const csrfVal = document.querySelector("#replyForm").querySelector("[name='_csrf']").value;
+      const replyForm = document.querySelector("#replyForm");
+      let csrfVal = undefined;
+      if (replyForm){
+         csrfVal = replyForm.querySelector("[name='_csrf']").value;
+      }
+      // 현재 로그인 사용자 이메일 가져오기
+      const loginUser = [[${#authentication.name}]];
 
       if (msg) {
         Swal.fire({

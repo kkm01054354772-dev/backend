@@ -1,6 +1,12 @@
 const replyList = document.querySelector(".replyList");
 const url = `http://localhost:8080/replies`;
 
+// -- 날짜/시간 2025/12/16 12:20
+const formatDate = (data) => {
+  const date = new Date(data);
+
+  return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes();
+};
 // -------------------------- READ
 // -- 댓글 목록 가져오기
 const loadReply = () => {
@@ -33,16 +39,18 @@ const loadReply = () => {
                 <div>
                   <span class="small">${formatDate(reply.createDate)}</span>
                 </div>
-              </div>
-              <div class="d-flex flex-column align-self-center">
-                <div class="mb-2">
-                  <button class="btn btn-outline-danger btn-sm">삭제</button>
-                </div>
-                <div class="mb-2">
-                  <button class="btn btn-outline-primary btn-sm">수정</button>
-                </div>
-              </div>
-            </div>`;
+              </div>`;
+        if (`${loginUser}` === `${reply.replyerEmail}`) {
+          result += `<div class="d-flex flex-column align-self-center">
+                  <div class="mb-2">
+                    <button class="btn btn-outline-danger btn-sm">삭제</button>
+                  </div>
+                  <div class="mb-2">
+                    <button class="btn btn-outline-primary btn-sm">수정</button>
+                  </div>
+                </div>`;
+        }
+        result += `</div>`;
       });
       replyList.innerHTML = result;
     });
@@ -51,99 +59,95 @@ const loadReply = () => {
 loadReply();
 // -------------------------- CREATE / UPDATE
 // -- 댓글 작성 클릭 시 = replyForm submit 발생 시
-document.querySelector("#replyForm").addEventListener("submit", (e) => {
-  // submit 기능 중지
-  e.preventDefault();
-  const form = e.target;
-  const rno = form.rno.value;
-  // {
-  //     "text": "reply....추가",
-  //     "replyer": "guest....1",
-  //     "bno": 301
-  // }
-  const reply = {
-    rno: rno,
-    text: form.text.value,
-    replyerEmail: form.replyerEmail.value,
-    bno: bno,
-  };
+if (replyForm) {
+  replyForm.addEventListener("submit", (e) => {
+    // submit 기능 중지
+    e.preventDefault();
+    const form = e.target;
+    const rno = form.rno.value;
+    // {
+    //     "text": "reply....추가",
+    //     "replyer": "guest....1",
+    //     "bno": 301
+    // }
+    const reply = {
+      rno: rno,
+      text: form.text.value,
+      replyerEmail: form.replyerEmail.value,
+      bno: bno,
+    };
 
-  // new or modify => rno value 존재 여부
-  if (!rno) {
-    // new
-    fetch(`${url}/new`, {
-      method: "POST",
-      headers: {
-        "X-CSRF-TOKEN": csrfVal,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reply),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`error! ${res.status}`);
-        }
-        // json body 추출
-        return res.json();
+    // new or modify => rno value 존재 여부
+    if (!rno) {
+      // new
+      fetch(`${url}/new`, {
+        method: "POST",
+        headers: {
+          "X-CSRF-TOKEN": csrfVal,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reply),
       })
-      .then((data) => {
-        console.log(data);
-        if (data) {
-          Swal.fire({
-            title: "댓글 작성 완료",
-            icon: "success",
-            draggable: true,
-          });
-        }
-        // form.replyer.value = "";
-        form.text.value = "";
-        // 댓글 불러오기
-        loadReply();
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`error! ${res.status}`);
+          }
+          // json body 추출
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          if (data) {
+            Swal.fire({
+              title: "댓글 작성 완료",
+              icon: "success",
+              draggable: true,
+            });
+          }
+          // form.replyer.value = "";
+          form.text.value = "";
+          // 댓글 불러오기
+          loadReply();
+        })
+        .catch((err) => console.log(err));
+    } else {
+      // modify
+      fetch(`${url}/${rno}`, {
+        method: "PUT",
+        headers: {
+          "X-CSRF-TOKEN": csrfVal,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reply),
       })
-      .catch((err) => console.log(err));
-  } else {
-    // modify
-    fetch(`${url}/${rno}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reply),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`error! ${res.status}`);
-        }
-        // json body 추출
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        if (data) {
-          Swal.fire({
-            title: "댓글 수정 완료",
-            icon: "success",
-            draggable: true,
-          });
-        }
-        form.replyer.value = "";
-        form.text.value = "";
-        form.rno.value = "";
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`error! ${res.status}`);
+          }
+          // json body 추출
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          if (data) {
+            Swal.fire({
+              title: "댓글 수정 완료",
+              icon: "success",
+              draggable: true,
+            });
+          }
+          // form.replyer.value = "";
+          form.text.value = "";
+          form.rno.value = "";
 
-        form.rbtn.innerHTML = "댓글 작성";
-        // 댓글 불러오기
-        loadReply();
-      })
-      .catch((err) => console.log(err));
-  }
-});
-
-// -- 날짜/시간 2025/12/16 12:20
-const formatDate = (data) => {
-  const date = new Date(data);
-
-  return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes();
-};
+          form.rbtn.innerHTML = "댓글 작성";
+          // 댓글 불러오기
+          loadReply();
+        })
+        .catch((err) => console.log(err));
+    }
+  });
+}
 
 // -------------------------- DELETE
 // 방법 1. 삭제 버튼 클릭 시
@@ -169,6 +173,9 @@ replyList.addEventListener("click", (e) => {
     // true인 경우 삭제(fetch)
     fetch(`${url}/${rno}`, {
       method: "DELETE",
+      headers: {
+        "X-CSRF-TOKEN": csrfVal,
+      },
     })
       .then((res) => {
         if (!res.ok) {
@@ -206,7 +213,8 @@ replyList.addEventListener("click", (e) => {
 
         // 가져온 reply를 replyForm에 보여주기
         form.rno.value = data.rno;
-        form.replyer.value = data.replyer;
+        form.replyerEmail.value = data.replyerEmail;
+        form.replyerName.value = data.replyerName;
         form.text.value = data.text;
 
         // 댓글 작성 => 댓글 수정버튼으로 변경
