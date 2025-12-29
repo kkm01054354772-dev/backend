@@ -12,8 +12,8 @@ import lombok.ToString;
 
 @ToString
 @Builder
-@AllArgsConstructortor
-@NoArgsConstructorructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class MovieImageDTO {
