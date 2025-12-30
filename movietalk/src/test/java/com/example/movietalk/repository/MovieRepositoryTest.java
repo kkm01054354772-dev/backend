@@ -148,4 +148,16 @@ public class MovieRepositoryTest {
         // 2. 회원 삭제
         memberRepository.deleteById(9L);
     }
+
+    @Commit
+    @Transactional
+    @Test
+    public void deleteByMovieTest() {
+        Movie movie = movieRepository.findById(111L).get();
+        // 영화 이미지 삭제
+        movieImageRepository.deleteByMovie(movie);
+        // 영화 삭제
+        movieRepository.delete(movie);
+    }
+
 }

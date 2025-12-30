@@ -1,21 +1,25 @@
-// 등록 클릭 시(form submit)
-document.querySelector("#createForm").addEventListener("submit", (e) => {
-  // submit 기능 중지
+// X 클릭시 파일 삭제(이벤트 버블링)
+document.querySelector(".uploadResult").addEventListener("click", (e) => {
   e.preventDefault();
 
-  // uploadResult 안의 li 정보 수집 후 form hidden 태그로 append
-  const attachInfos = document.querySelectorAll(".uploadResult li");
+  const aTag = e.target.closest("a");
+  const li = e.target.closest("li");
 
-  let result = "";
-  attachInfos.forEach((obj, idx) => {
-    result += `<input type="hidden" name="movieImages[${idx}].imgName" value="${obj.dataset.name}">`;
-    result += `<input type="hidden" name="movieImages[${idx}].uuid" value="${obj.dataset.uuid}">`;
-    result += `<input type="hidden" name="movieImages[${idx}].path" value="${obj.dataset.path}">`;
-  });
+  // href 값 가져오기
+  const href = aTag.getAttribute("href");
 
-  e.target.insertAdjacentHTML("beforeend", result);
+  // 컨트롤러로 요청 보내기
+  const formData = new FormData();
+  formData.append("fileName", href);
 
-  console.log(e.target.innerHTML);
-
-  e.target.submit();
+  fetch("/upload/remove", {
+    method: "post",
+    body: formData,
+  })
+    .then((res) => res.text())
+    .then((data) => {
+      console.log(data);
+      // 화면에서 이미지 제거
+      li.remove();
+    });
 });
