@@ -128,11 +128,18 @@ public class MovieRepositoryTest {
     // @Transactional(readOnly = true)
     @Test
     public void getMovieReviewTest() {
-        List<Review> result = reviewRepository.findByMovie(Movie.builder().mno(100L).build());
+        List<Review> result = reviewRepository.findByMovie(Movie.builder().mno(85L).build());
         result.forEach(r -> {
-            System.out.println(r);
-            // 리뷰 작성자도 조회
-            System.out.println(r.getMember().getEmail());
+            System.out.print(r + "\t");
+            System.out.print(r.getRno() + "\t");
+            System.out.print(r.getGrade() + "\t");
+            System.out.print(r.getText() + "\t");
+            // 리뷰 작성자 조회
+            System.out.print(r.getMember().getMid() + "\t");
+            System.out.print(r.getMember().getEmail() + "\t");
+            System.out.print(r.getMember().getNickname() + "\t");
+            // 영화 정보 조회
+            System.out.println(r.getMovie().getMno());
         });
     }
 
