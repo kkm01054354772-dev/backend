@@ -1,0 +1,16 @@
+Apache Log4j2 
+화면 출력 => 개발시 확인용
+파일 저장
+데이터베이스 저장
+
+로그레벨
+trace: 흐름 추적 (개발 시)
+debug: 디버깅 (개발 시)
+info: 정상동작 (운영서버)
+warn: 경고 (운영서버)
+error: 오류 (운영서버)
+
+
+jwt token
+. 앞부분 : Header + PayLoad => Base64 인코딩 => 디코딩 가능
+. 뒷부분 : signature 암호화 

@@ -1,0 +1,89 @@
+package com.example.movietalk.movie.controller;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+
+import com.example.movietalk.movie.dto.MovieDTO;
+import com.example.movietalk.movie.dto.PageRequestDTO;
+import com.example.movietalk.movie.dto.PageResultDTO;
+import com.example.movietalk.movie.service.MovieService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@RequestMapping("/movie")
+@RequiredArgsConstructor
+@Log4j2
+@Controller
+public class MovieController {
+
+    private final MovieService movieService;
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/remove")
+    public String postRemove(Long mno, RedirectAttributes rttr, PageRequestDTO pageRequestDTO) {
+        log.info("삭제 {}", mno);
+        movieService.deleteRow(mno);
+
+        rttr.addAttribute("page", pageRequestDTO.getPage());
+        rttr.addAttribute("size", pageRequestDTO.getSize());
+        return "redirect:/movie/list";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping({ "/read", "/modify" })
+    public void getRead(@RequestParam Long mno, Model model, PageRequestDTO pageRequestDTO) {
+        log.info("get or modify {}", mno);
+
+        MovieDTO movieDTO = movieService.getRow(mno);
+        model.addAttribute("dto", movieDTO);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/modify")
+    public String postModify(MovieDTO movieDTO, RedirectAttributes rttr, PageRequestDTO pageRequestDTO) {
+        log.info("영화 수정 요청 {}", movieDTO);
+
+        Long mno = movieService.updateRow(movieDTO);
+
+        rttr.addAttribute("mno", mno);
+        rttr.addAttribute("page", pageRequestDTO.getPage());
+        rttr.addAttribute("size", pageRequestDTO.getSize());
+        return "redirect:/movie/read";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/create")
+    public void getCreate(PageRequestDTO pageRequestDTO) {
+        log.info("영화 추가 폼 요청 ");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/create")
+    public String postCreate(MovieDTO movieDTO, RedirectAttributes rttr, PageRequestDTO pageRequestDTO) {
+        log.info("영화 추가 요청 {}", movieDTO);
+
+        String title = movieService.register(movieDTO);
+
+        rttr.addFlashAttribute("mno", title + " 영화 등록 완료");
+        rttr.addAttribute("page", "1");
+        rttr.addAttribute("size", pageRequestDTO.getSize());
+        return "redirect:/movie/list";
+    }
+
+    @GetMapping("/list")
+    public void getMovieList(PageRequestDTO pageRequestDTO, Model model) {
+        log.info("영화 리스트 요청 {}", pageRequestDTO);
+
+        PageResultDTO<MovieDTO> result = movieService.getMovieList(pageRequestDTO);
+        model.addAttribute("result", result);
+    }
+
+}

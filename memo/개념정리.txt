@@ -1,0 +1,107 @@
+jpa 프로젝트 생성
+- spring web, lombok, thymeleaf, dev tools, validation
+- spring jpa, mysql
+
+데이터베이스 연동
+ - java + DB 연동 => JDBC
+
+데이터베이스 작업을 쉽게 도와주는 라이브러리 
+(1) MyBatis
+(2) ORM(Object Relational Mapping)
+        테이블 행 하나 == 객체
+        ==> JPA(Java Persistence API) : Java에서 DB API 
+        ==> 기술로 구현 : Hibernate
+
+
+entity : 데이터베이스 테이블 연동 객체
+repository : 
+
+
+Entity 작성 어노테이션
+@Entity : 이 클래스는 테이블과 연동되어 있음
+@Id : PK
+        기본키를 자동으로 증가시킬 때 : MYSQL (auto_increment) / Oracle (sequence)
+
+
+spring-boot-starter-test : 애플리케이션 테스트 라이브러리 포함
+ ㄴ JUnit
+
+@SpringBootTest : spring boot test 클래스라는 의미
+테스트 클래스 내부에 작성하는 메소드 위에 무조건 @Test 어노테이션 넣어야 함
+
+@Autowired
+private StudentRepository studentRepository;
+
+스프링(부트) 프레임워크
+=> 개발자가 할 일 축소
+=> 객체 생성 => 사용
+        A obj = new A();
+        obj.method();
+=> new 해야 할 객체를 알려주기(어노테이션 통해서 알려주기)
+        @Controller, @Service, @Repository, @Component
+
+=> 주입 : @Autowired
+
+
+웹어플리케이션
+웹서버 + WAS(컨테이너(톰캣))
+톰캣 아래에 지정된 폴더에 작성된 프로젝트 배포 => gradle 사용
+./gradlew build
+
+
+
+
+@Autowired: 주입
+
+일반 자바
+Memo memo = new Memo();
+MemoService service= new MemoService();
+
+
+
+주입 : @Autowired, @Inject
+
+전체메모 조회 : /memo/list
+하나의 메모 조회 : /memo/read?id=1
+하나의 메모 수정 
+    (1) 수정할 메모 가져오기 : /memo/modify?id=1 + get
+    (2) 수정 후 보내기 : /memo/modify?id=1 + post
+하나의 메모 삭제 : /memo/remove?id=1
+새로운 메모 삽입 : /memo/create
+
+
+
+-------------------------------------
+REST
+자원(Resource)을 이름(URL)으로 구분하여 해당 자원의 상태(State)를 주고받는 방식.
+웹에서 데이터 전송 및 처리를 위한 인터페이스(RESTful API)설계에 널리 사용됨
+
+일반적인 웹 개발
+http://localhost:8080/memo/list + @GET : 목록 데이터 + 템플릿
+http://localhost:8080/memo/read?id=3 + @GET : 상세 데이터 + 템플릿
+http://localhost:8080/memo/modify?=id=3 + @GET + 템플릿
+http://localhost:8080/memo/modify + @POST : 수정 + 템플릿
+http://localhost:8080/memo/remove + @POST : 삭제 + 템플릿
+
+앱, 데스크탑, 태블릿, 노트북 ...
+
+서버에서는 데이터만
+화면단에서 다양성 제공
+
+http://localhost:8080/memo/new + POST + data => 삽입
+http://localhost:8080/memo/list + GET => data
+http://localhost:8080/memo/3 + GET => data
+http://localhost:8080/memo/3 + PUT(PATCH) + data => 수정
+http://localhost:8080/memo/3 + DELETE => 제거
+
+컨트롤러 : 데이터 전달(데이터 가져오기) => json
+--
+json 형식 -> 자바스크립트로 처리
+--
+자바스크립트 기반의 화면단 사용시 제일 편함 => react
+
+
+--
+화면단 데이터 요청
+(1) fetch : 브라우저가 기본 제공
+(2) axios : 외부 라이브러리 필요

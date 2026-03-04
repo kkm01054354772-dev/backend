@@ -1,0 +1,71 @@
+nano ~/.bashrc
+=> nano 편집기로 bashrc 쉘 열기
+
+$PWD : 현재 작업 디렉토리
+=> Print Working Directory
+
+if [-f"$PWD/.env"]; then  // 현재 작업 디렉토리에 .env 파일이 존재하는지 확인 
+    set -a // 이후에 선언되는 모든 변수들을 자동으로 export
+    source "$PWD/.env" // 실행
+    set +a  // 이후에 선언되는 모든 변수들을 자동으로 export 종료
+fi
+
+
+http://localhost:8080/swagger-ui/index.html
+
+=====================================================================
+LLM : 이전 대화를 기억할 수 없음
+
+이전 대화 내용 중 중요한 정보 저장 => 다음 요청 시 다시 LLM 에게 전달
+
+spring AI
+ChatMemory : 회의할 때 사용하는 메모 같은 개념
+ChatHistory : 회의 녹취록 같은 개념
+
+Memory Stage : ChatMemoryRepository => RDB
+
+
+================================================
+임베딩 : 글자 -> 벡터(1536 / 3072 차원으로 변경)
+openai embedding 모델
+추천, 분류, ...
+
+spring AI
+EmbeddingModel : flat[] 벡터값 반환
+
+RAG : LLM 모델은 학습한 지식 안에서만 답변 가능
+ => 모델이 모르는 지식을 외부에서 검색(Retrieval)한 후 답변
+    - 검색 :PDF, DB, 파일, 웹 URL...
+    - embedding 처리 필요
+    - 의미 기반 검색 : 키워드가 아니라 뜻이 비슷한 문서 찾기
+    - LLM 모델의 환각증상 감소
+
+1단계 : 데이터 색인
+데이터 로딩 => 데이터 분할 => 임베딩 => 저장(vector DB)
+
+2단계 : 질의 응답
+사용자 질의 => 질의 임베딩 처리 => 검색(vector DB) => top-K 가져와서 모델에게 전달
+
+
+데이터 분할
+TextSplitter
+
+저장
+VectorStore => DB 필요
+    - 파이썬 : FAISS
+    - 인메모리 : VectorStore
+
+Advisor:
+(1) 직접 구현
+(2) QuestionAnswerAdvisor
+
+====================================
+LLM : OpenAI => 프레임워크 LangChain
+ :
+    Spring AI 라이브러리 
+        - 텍스트 생성
+        - 대화 기억
+        - 임베딩
+            => 추천 / 분류 / 비속어
+            => RAG (특정 조건 안에서 검색)
+                1. PDF 문서 

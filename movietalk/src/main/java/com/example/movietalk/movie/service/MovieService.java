@@ -1,0 +1,232 @@
+package com.example.movietalk.movie.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.movietalk.movie.dto.MovieDTO;
+import com.example.movietalk.movie.dto.MovieImageDTO;
+import com.example.movietalk.movie.dto.PageRequestDTO;
+import com.example.movietalk.movie.dto.PageResultDTO;
+import com.example.movietalk.movie.entity.Movie;
+import com.example.movietalk.movie.entity.MovieImage;
+import com.example.movietalk.movie.repository.MovieImageRepository;
+import com.example.movietalk.movie.repository.MovieRepository;
+import com.example.movietalk.movie.repository.ReviewRepository;
+
+import groovyjarjarantlr4.v4.parse.ANTLRParser.ruleEntry_return;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+@Transactional
+@Service
+@Log4j2
+@RequiredArgsConstructor
+public class MovieService {
+
+    private final MovieRepository movieRepository;
+    private final MovieImageRepository movieImageRepository;
+    private final ReviewRepository reviewRepository;
+
+    // 영화 삭제
+    public void deleteRow(Long mno) {
+
+        // 영화 이미지 제거
+        Movie movie = movieRepository.findById(mno).get();
+        movieImageRepository.deleteByMovie(movie);
+
+        // 리뷰 삭제
+        reviewRepository.deleteByMovie(movie);
+
+        // 영화 삭제
+        movieRepository.delete(movie);
+    }
+
+    // 영화 수정
+    public Long updateRow(MovieDTO dto) {
+
+        // 영화 제목 변경
+        Movie movie = movieRepository.findById(dto.getMno()).get();
+        movie.changeTitle(dto.getTitle());
+        // movieRepository.save(movie); dirty-checking
+
+        // 영화 이미지 제거
+        movieImageRepository.deleteByMovie(movie);
+
+        // 이미지 추가
+        movie = dtoToEntity(dto);
+        movie.getMovieImages().forEach(img -> movieImageRepository.save(img));
+
+        return movie.getMno();
+    }
+
+    // 상세조회
+    @Transactional(readOnly = true)
+    public MovieDTO getRow(Long mno) {
+        List<Object[]> result = movieRepository.getMovieWithAll(mno);
+
+        // Movie 첫번째 배열의 첫번째 Movie 만 가져오기
+        Movie movie = (Movie) result.get(0)[0];
+
+        List<MovieImage> movieImages = result.stream().map(en -> (MovieImage) en[1]).filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        // review 수 / 평점 첫번째 배열의 첫번째 값들 가져오기
+        Long reviewCnt = (Long) result.get(0)[2];
+        Double avg = (Double) result.get(0)[3];
+
+        return entityToDto(movie, movieImages, reviewCnt, avg);
+
+    }
+
+    // N:1 관계일 때
+    // public Long register(MovieDTO dto) {
+
+    // Map<String, Object> entityMap = dtoToEntity(dto);
+
+    // // 영화 정보 저장
+    // Movie movie = (Movie) entityMap.get("movie");
+    // movieRepository.save(movie);
+
+    // // 영화 이미지 저장
+    // List<MovieImage> imgList = (List<MovieImage>) entityMap.get("imgList");
+    // imgList.forEach(img -> {
+    // movieImageRepository.save(img);
+    // });
+    // return movie.getMno();
+    // }
+
+    // private Map<String, Object> dtoToEntity(MovieDTO dto) {
+
+    // Map<String, Object> entityMap = new HashMap<>();
+
+    // Movie movie = Movie.builder()
+    // .mno(dto.getMno())
+    // .title(dto.getTitle())
+    // .build();
+    // entityMap.put("movie", movie);
+
+    // // List<MovieImageDTO> => List<MovieImage>
+    // List<MovieImageDTO> imageDTOs = dto.getMovieImages();
+    // if (imageDTOs != null && imageDTOs.size() > 0) {
+    // List<MovieImage> movieImages = imageDTOs.stream().map(movieImage -> {
+    // return MovieImage.builder()
+    // .inum(movieImage.getInum())
+    // .imgName(movieImage.getImgName())
+    // .uuid(movieImage.getUuid())
+    // .path(movieImage.getPath())
+    // .movie(movie)
+    // .build();
+    // }).collect(Collectors.toList());
+    // entityMap.put("imgList", movieImages);
+    // }
+    // return entityMap;
+    // }
+
+    // 1:N 관계 추가 설정 + cascade 적용
+    public String register(MovieDTO dto) {
+
+        Movie movie = dtoToEntity(dto);
+        return movieRepository.save(movie).getTitle();
+    }
+
+    private Movie dtoToEntity(MovieDTO dto) {
+
+        Movie movie = Movie.builder()
+                .mno(dto.getMno())
+                .title(dto.getTitle())
+                .build();
+
+        // List<MovieImageDTO> => List<MovieImage>
+        List<MovieImageDTO> imageDTOs = dto.getMovieImages();
+        if (imageDTOs != null && imageDTOs.size() > 0) {
+            imageDTOs.stream().forEach(movieImage -> {
+                MovieImage image = MovieImage.builder()
+                        .inum(movieImage.getInum())
+                        .imgName(movieImage.getImgName())
+                        .uuid(movieImage.getUuid())
+                        .path(movieImage.getPath())
+                        .movie(movie)
+                        .build();
+                movie.addImage(image);
+            });
+        }
+        return movie;
+    }
+
+    // 전체조회
+    @Transactional(readOnly = true)
+    public PageResultDTO<MovieDTO> getMovieList(PageRequestDTO pageRequestDTO) {
+        Pageable pageable = PageRequest.of(pageRequestDTO.getPage() - 1, pageRequestDTO.getSize(),
+                Sort.by("mno").descending());
+        // [Movie(mno=291, title=Movie Title 91), MovieImage(inum=887,
+        // uuid=4ac87a98-9e6d-4522-afad-41dd3f95772b, path=null, imgName=test0.jpg,
+        // ord=0), 0, 0.0]
+        Page<Object[]> result = movieRepository.getListPage(pageable);
+
+        // entity <=> dto : ModelMapper (dto, entity 동일한 모양일 때)
+
+        // List<MovieDTO> dtoList = new ArrayList<>();
+        // result.forEach(obj -> {
+        // MovieDTO dto = entityToDto((Movie) obj[0], List.of((MovieImage) obj[1]),
+        // (Long) obj[2], (Double) obj[3]);
+        // dtoList.add(dto);
+        // });
+
+        // 이미지 업로드가 없을 때 NullPointerException가 뜨지 않도록
+        Function<Object[], MovieDTO> function = (obj -> {
+            MovieImage mi = (MovieImage) obj[1];
+            List<MovieImage> images = (mi == null) ? List.of() : List.of(mi);
+
+            return entityToDto((Movie) obj[0], images, (Long) obj[2], (Double) obj[3]);
+        });
+
+        List<MovieDTO> dtoList = result.stream().map(function).collect(Collectors.toList());
+        Long totalCount = result.getTotalElements();
+
+        return PageResultDTO.<MovieDTO>withAll()
+                .dtoList(dtoList)
+                .totalCount(totalCount)
+                .pageRequestDTO(pageRequestDTO)
+                .build();
+    }
+
+    // 상세조회
+
+    private MovieDTO entityToDto(Movie movie, List<MovieImage> mImages, Long reviewCnt, Double avg) {
+        MovieDTO movieDTO = MovieDTO.builder()
+                .mno(movie.getMno())
+                .title(movie.getTitle())
+                .avg(avg)
+                .reviewCnt(reviewCnt)
+                .createDate(movie.getCreateDate())
+                .build();
+
+        // List<MovieImage> => List<MovieImageDTO>
+        if (mImages != null && mImages.size() > 0) {
+            List<MovieImageDTO> imageDTOs = mImages.stream().map(movieImage -> {
+                return MovieImageDTO.builder()
+                        .inum(movieImage.getInum())
+                        .imgName(movieImage.getImgName())
+                        .uuid(movieImage.getUuid())
+                        .path(movieImage.getPath())
+                        .build();
+            }).collect(Collectors.toList());
+
+            movieDTO.setMovieImages(imageDTOs);
+        }
+        return movieDTO;
+
+    }
+}

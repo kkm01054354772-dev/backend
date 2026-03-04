@@ -1,0 +1,31 @@
+Book
+id : auto_increment
+code(unique) : B10102
+title : 개미
+price : 12800
+author : 베르나르 베르베르
+
+테이블 생성
+1. 직접 : create table
+2. JPA 이용 : properties -> ddl-auto = create 
+ 
+
+------------
+쿼리 생성
+1. findBy ~~ : select (Spring Data JPA)
+2. @Query("쿼리구문")
+   @Query("쿼리구문", nativeQuery=true) : SQL 구문 사용
+3. Querydsl : 동적인 상황에 대한 처리가 훨씬 편함
+      ㄴ 외부 라이브러리 이용 必
+      
+
+-----------
+
+검색 기능 구현
+제목 => Board
+내용
+
+작성자 => Member
+
+Book Querydsl
+1. QuerydslPredicateExecutor
